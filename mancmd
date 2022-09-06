@@ -1,0 +1,54 @@
+if test "$1" = "-a" ; then
+  
+  if ! command -v $2 &> /dev/null; then
+    if [ -f "~/prebin/${2}" ]; then
+      sudo cp "~/prebin/${2}" /bin/
+      sudo chmod 775 "/bin/${2}"
+      echo The command $2 was added
+    else
+      echo No command named $2 in prebin
+    fi
+  else
+    echo The command $2 already exists
+  fi
+
+
+elif test "$1" = "-u" ; then
+
+  if [ -f "~/prebin/${2}" ]; then
+    echo Verify that the command was yours and press enter, else CtrlC
+    read garbage
+    sudo rm "/bin/${2}"
+    sudo cp "~/prebin/${2}" /bin/
+    sudo chmod 775 "/bin/${2}"
+    echo The command $2 was updated
+  else
+    echo No command named $2 in prebin
+  fi
+
+
+elif test "$1" = "-r" ; then
+
+   if [ -f "/bin/${2}" ]; then
+    sudo rm "/bin/${2}"
+    echo The command $2 was removed
+    if [ -f "~/prebin/${2}" ]; then
+    echo Do you want to also remove the prebin file?
+    echo If yes press enter, press CtrlC otherwise
+    read garbage
+    rm "~/prebin/${2}"
+    echo The prebin files of $2 were removed 
+    fi
+  else
+    echo No command named $2 in bin
+  fi
+
+
+
+elif test "$1" = "-h" ; then
+  echo "mancmd -a <name>: Adds    the command <name> found at home/prebin" 
+  echo "mancmd -u <name>: Updates the command <name> found at home/prebin"
+  echo "mancmd -r <name>: Removes the command <name> found at home/prebin"
+else
+   echo please run: mancmd -h
+fi
